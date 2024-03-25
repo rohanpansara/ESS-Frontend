@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+.addLeaveParent {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-column-gap: 15px;
+    grid-row-gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 10px;
+}
+
+.addLeaveParent div span {
+    color: var(--form-font);
+    text-align: left;
+    padding-left: 2px;
+    font-weight: 600;
+}
+.addLeaveParent input[type="number"],
+.addLeaveParent input[type="text"],
+.addLeaveParent select {
+    width: 100%;
+    padding: 10px;
+    color: var(--form-field-font);
+    background-color: var(--form-field-disabled);
+    border: 1px solid var(--form-field-border);
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+
+.addLeaveParent .div7 span .innerText{
+    font-size: 11px;
+}
+
+.addLeaveParent .div7.disabled span{
+    color: var(--form-font)  
+}
+
+.addLeaveParent .div7.disabled input[type="number"]{
+    background-color: var(--form-field);
+    cursor: not-allowed;  
+}
+
+.addLeaveParent input[type="text"]:focus,
+.addLeaveParent input[type="number"]:focus,
+.addLeaveParent select:focus {
+    border-color: dodgerblue;
+    outline: none;
+}
+
+.leave-form{
+    border: none;
+    outline: none;
+}
+
+.addLeaveParent input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--form-field-disabled);
+    color: var(--form-field-font);
+    border: 1px solid var(--form-field-border);
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.addLeaveParent input[type="date"]:focus {
+    border-color: dodgerblue;
+    outline: none;
+}
+
+.addLeaveParent .div1{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    color: var(--form-font);
+}
+
+.addLeaveParent .div2{
+    display: flex;
+    justify-content: right;
+    align-items:baseline;
+}
+
+.addLeaveParent .div2 button{
+    fill: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30%;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid var(--red);
+    background-color: var(--red);
+}
+
+.addLeaveParent .div2 button:hover{
+    cursor: pointer;
+    fill: var(--dark);
+    background-color: var(--form-bg);
+}
+
+.addLeaveParent .div8 {
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.addLeaveParent .div8 button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #0027b2;
+    border-radius: 5px;
+    font-size: 18px;
+    background-color: #0027b2;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.addLeaveParent .div8 button:hover {
+    background-color: #007acc;
+    border-color: #007acc;
+}
+
+.addLeaveParent .div8 button:focus {
+    outline: none;
+    border-color: #007acc;
+}
+
+.div1 { grid-area: 1 / 1 / 2 / 4; }
+.div2 { grid-area: 1 / 6 / 2 / 7; }
+.div3 { grid-area: 2 / 1 / 3 / 4; }
+.div4 { grid-area: 2 / 4 / 3 / 7; }
+.div5 { grid-area: 3 / 1 / 4 / 3; }
+.div6 { grid-area: 3 / 3 / 4 / 5; }
+.div7 { grid-area: 3 / 5 / 4 / 7; }
+.div8 { grid-area: 4 / 5 / 5 / 7; }
