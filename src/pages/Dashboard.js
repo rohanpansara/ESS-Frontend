@@ -7,7 +7,7 @@ import "react-calendar/dist/Calendar.css";
 import "../styles/dashboard.css";
 import Base from "../components/Base";
 import axios from "axios";
-import UserTable from "../components/NormalTable";
+import UserLeaveTable from "../components/NormalTable";
 import LeaveApproval from "../components/LeaveApproval";
 
 const Dashboard = () => {
@@ -16,8 +16,10 @@ const Dashboard = () => {
   const employeeName = localStorage.getItem("employeeName");
 
   const [loading, setLoading] = useState(true);
+  const [isManager, setIsManager] = useState(false);
   const [employeeData, setEmployeeData] = useState(null);
   const [leaveData, setLeaveData] = useState([]);
+  const [managerLeaveData, setManagerLeaveData] = useState([]);
   const [workHours, setWorkHours] = useState(null);
   const [finalPunchOut, setFinalPunchOut] = useState(null);
   const [holidays, setHolidays] = useState([]);
@@ -55,7 +57,7 @@ const Dashboard = () => {
 
   const fetchEmployeeDetails = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await axios.get(
         "http://localhost:8080/auth/user/currentEmployee",
         {
@@ -77,10 +79,13 @@ const Dashboard = () => {
           "employeeFullName",
           data.firstname + " " + data.lastname
         );
-        setLoading(false)
+        if(data.designation.id===1){
+          setIsManager(true)
+        }
+        setLoading(false);
       } else {
         toast.error(message || "Couldn't load employee data");
-        setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       toast.error("Error loading employee details: " + error.message);
@@ -106,7 +111,7 @@ const Dashboard = () => {
 
   const fetchLeaveDetails = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await axios.get(
         "http://localhost:8080/auth/user/leaves/getAllLeave",
         {
@@ -123,25 +128,63 @@ const Dashboard = () => {
 
       if (success) {
         setLeaveData(data);
-        setLoading(false)
+        setLoading(false);
       } else {
         toast.error(message || "Couldn't load leave data");
       }
     } catch (error) {
       toast.error("Error loading leave details: " + error.message);
-    }
-    finally {
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
+  const fetchLeaveDetailsForManager = async () => {
+    if (isManager) {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          "http://localhost:8080/auth/user/manager/leaves/getAllLeave",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              id: localStorage.getItem("employeeId"),
+            },
+          }
+        );
+  
+        const { success, data, message } = response.data;
+  
+        if (success) {
+          setManagerLeaveData(data)
+          setLoading(false);
+        } else {
+          toast.error(message || "Couldn't load leave data for the team");
+          setLoading(false);
+        }
+      } catch (error) {
+        toast.error("Error loading leave details for the manager: " + error.message);
+      }
+    }
+  }
+
+  useEffect( () => {
+    fetchLeaveDetailsForManager();
+  }, [isManager]);
+  
+
   const fetchWorkHours = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       // assuming you have the token available
       const response = await axios.get(
-        "http://localhost:8080/auth/attendance",
+        "http://localhost:8080/auth/user/attendance",
         {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           params: {
             id: localStorage.getItem("employeeId"),
           },
@@ -153,19 +196,18 @@ const Dashboard = () => {
       if (success) {
         setWorkHours(data.workHours); // set work hours from the response
         setFinalPunchOut(data.finalPunchOutTime); // set final punch out time from the response
-        setLoading(false)
+        setLoading(false);
       } else {
         toast.error(message || "Couldn't load work hours data");
-        setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       toast.error("Error loading work hours: " + error.message);
     }
-
   };
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     axios
       .get("http://localhost:8080/auth/holiday/getAll")
       .then((response) => {
@@ -181,7 +223,7 @@ const Dashboard = () => {
             return moment(dateFrom).format("YYYY-MM-DD");
           });
           setHolidays(marks);
-          setLoading(false)
+          setLoading(false);
         } else {
           toast.error(message);
         }
@@ -189,9 +231,17 @@ const Dashboard = () => {
       .catch((error) => console.error("Error fetching holidays:", error));
   }, []);
 
-  const columns = ['reason', 'appliedOn', 'status'];
-  const leaveApprovalColumns = ['appliedOn', 'reason', 'from', 'to', 'days', 'accept', 'reject']
-
+  const columns = ["reason", "appliedOn", "status"];
+  const leaveApprovalColumns = [
+    "employee",
+    "appliedOn",
+    "reason",
+    "from",
+    "to",
+    "days",
+    "accept",
+    "reject",
+  ];
 
   return (
     <>
@@ -199,7 +249,7 @@ const Dashboard = () => {
         <>
           <div id="content">
             <main className="loader-main">
-              <span class="loader"></span>
+              <span className="loader"></span>
             </main>
           </div>
         </>
@@ -359,33 +409,37 @@ const Dashboard = () => {
                   </li>
                 </a>
               </ul>
-              <UserTable
-                data={leaveData}
-                columns={columns}
-                columnRenderers={{
-                  status: (status) => (
-                    <span className={`status ${status.toLowerCase()}`}>
-                      {status}
-                    </span>
-                  ),
-                  type: (type) => (
-                    <span className={`type ${type.toLowerCase()}`}>
-                      {type}
-                    </span>
-                  )
-                }}
-              />
-              <LeaveApproval
-                data={leaveData}
-                columns={leaveApprovalColumns}
-                columnRenderers={{
-                  status: (status) => (
-                    <span className={`status ${status.toLowerCase()}`}>
-                      {status}
-                    </span>
-                  )
-                }}
-              />
+              {!isManager ? (
+                <UserLeaveTable
+                  data={leaveData}
+                  columns={columns}
+                  columnRenderers={{
+                    status: (status) => (
+                      <span className={`status ${status.toLowerCase()}`}>
+                        {status}
+                      </span>
+                    ),
+                    type: (type) => (
+                      <span className={`type ${type.toLowerCase()}`}>
+                        {type}
+                      </span>
+                    ),
+                  }}
+                />
+              ) : (
+                <LeaveApproval
+                  data={managerLeaveData}
+                  columns={leaveApprovalColumns}
+                  columnRenderers={{
+                    status: (status) => (
+                      <span className={`status ${status.toLowerCase()}`}>
+                        {status}
+                      </span>
+                    ),
+                  }}
+                />
+              )}
+
               <Toaster richColors />
             </main>
           </div>
