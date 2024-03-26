@@ -9,10 +9,12 @@
     grid-row-gap: 10px;
     font-family: 'Poppins', sans-serif;
     border-radius: 10px;
+    /* background-color: var(--form-bg); */
+    /* color: var(--form-field); */
 }
 
 .addLeaveParent div span {
-    color: var(--form-font);
+    color: var(--form-field);   
     text-align: left;
     padding-left: 2px;
     font-weight: 600;
@@ -22,14 +24,14 @@
 .addLeaveParent select {
     width: 100%;
     padding: 10px;
-    color: var(--form-field-font);
-    background-color: var(--form-field-disabled);
-    border: 1px solid var(--form-field-border);
     border-radius: 5px;
     font-size: 16px;
     margin-bottom: 10px;
     box-sizing: border-box;
     transition: border-color 0.3s;
+    color: var(--form-field);
+    background: var(--form-field-bg);
+    border: 1px solid var(--form-field-border);
 }
 
 
@@ -38,11 +40,11 @@
 }
 
 .addLeaveParent .div7.disabled span{
-    color: var(--form-font)  
+    color: var(--form-field)  
 }
 
 .addLeaveParent .div7.disabled input[type="number"]{
-    background-color: var(--form-field);
+    background-color: var(--form-field-bg);
     cursor: not-allowed;  
 }
 
@@ -61,9 +63,9 @@
 .addLeaveParent input[type="date"] {
     width: 100%;
     padding: 10px;
-    background-color: var(--form-field-disabled);
-    color: var(--form-field-font);
+    background-color: var(--form-field-bg);
     border: 1px solid var(--form-field-border);
+    color: var(--form-field);
     border-radius: 5px;
     font-size: 16px;
     margin-bottom: 10px;
@@ -80,7 +82,7 @@
     display: flex;
     justify-content: left;
     align-items: center;
-    color: var(--form-font);
+    color: var(--form-field);
 }
 
 .addLeaveParent .div2{
@@ -90,7 +92,7 @@
 }
 
 .addLeaveParent .div2 button{
-    fill: var(--dark);
+    fill: var(--light);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -103,7 +105,7 @@
 
 .addLeaveParent .div2 button:hover{
     cursor: pointer;
-    fill: var(--dark);
+    fill: var(--red);
     background-color: var(--form-bg);
 }
 
@@ -117,23 +119,24 @@
 .addLeaveParent .div8 button {
     width: 100%;
     padding: 10px;
-    border: 1px solid #0027b2;
+    border: 1px solid var(--submit-color);
     border-radius: 5px;
     font-size: 18px;
-    background-color: #0027b2;
+    background-color: var(--submit-color);
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .addLeaveParent .div8 button:hover {
-    background-color: #007acc;
-    border-color: #007acc;
+    background-color: var(--form-bg);
+    color: var(--submit-color);
+    border-color: var(--submit-color);
 }
 
 .addLeaveParent .div8 button:focus {
     outline: none;
-    border-color: #007acc;
+    border-color: var(--submit-color);
 }
 
 .div1 { grid-area: 1 / 1 / 2 / 4; }

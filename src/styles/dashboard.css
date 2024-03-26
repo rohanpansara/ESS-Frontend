@@ -34,6 +34,8 @@ li {
 	--green: #65B741;
 	--light-green: #84b071;
 
+	--submit-color: #1560bd;
+
 
 	/* SIDEBAR ESSENTIALS */
 	--punch-in-soft: #addfad;
@@ -55,16 +57,20 @@ li {
 	--calendar-back: #f5f5f5;
 	--calendar-font: #858585;
 	--calendar-weekend: #ff0038;
+	--calendar-disabled: #d1d1d1;
+
+	--calendar-present-days: #2b82ecc7;
 
 
 	/* ESSENTIALS */
-	--accept-dark: #77dd77;
-	--accept-light: #00a86b;
+	--accept-dark: #00a86b;
+	--accept-light: #008b58;
 	--reject-dark: #FF0800;
 	--reject-light: #a80000;
 	--approved: #32CD32;
 	--pending: #EDAE49;
 	--rejected: #E54B4B;
+
 
 	/* PROJECT CARDS */
 	--project-total: #A4BAB7;
@@ -80,6 +86,13 @@ li {
 	--project-status-down-completed-p: #0C7C59;
 	--project-status-down-cancelled: #CF8E80;
 	--project-status-down-cancelled-p: #9B1D20;
+
+
+	/* FORM ESSENTIALS */
+	--form-bg: #F9F9F9;
+	--form-field: #3b3c36;
+	--form-field-bg: #EFEFEF;
+	--form-field-border: #BDBDBD;
 
 
 	--bs-box-shadow: 2.5px 5.0px 5.0px rgba(0, 0, 0, 0.2);
@@ -105,6 +118,7 @@ body.dark {
 	--calendar-font: #333333;
 	--calendar-weekend: #BD2031;
 
+
 	/* PROJECT CARDS */
 	--project-total: #283D3B;
 	--project-total-font: #A4BAB7;
@@ -119,6 +133,15 @@ body.dark {
 	--project-status-down-completed-p: #73E2A7;
 	--project-status-down-cancelled: #9B1D20;
 	--project-status-down-cancelled-p: #CF8E80;
+
+
+	/* FORM ESSENTIALS */
+	--form-bg: #303032;
+	--form-field: #FBFBFB;
+	--form-field-bg: #FBFBFB;
+	--form-field-border: #BDBDBD;
+
+
 }
 
 body {
@@ -867,11 +890,15 @@ body #content main .box-info li.widgets.dashboard:hover {
 	color: var(--calendar-weekend);
 }
 
+.react-calendar.attendance .react-calendar__viewContainer .react-calendar__month-view div div .react-calendar__month-view__weekdays .react-calendar__month-view__weekdays__weekday.react-calendar__month-view__weekdays__weekday--weekend {
+	color: var(--calendar-disabled);
+}
+
 .react-calendar__tile--now {
 	background-color: #C3F0C2;
 }
 
-.react-calendar .react-calendar__viewContainer .react-calendar__month-view div div .react-calendar__month-view__days button.react-calendar__tile--active {
+.react-calendar .react-calendar__viewContainer .react-calendar__month-view div div .react-calendar__month-view__days button:not(.weekend.attendance).react-calendar__tile--active {
 	background-color: #003870;
 	color: white;
 }
@@ -884,9 +911,29 @@ body #content main .box-info li.widgets.dashboard:hover {
 	color: var(--calendar-weekend);
 }
 
+.react-calendar .react-calendar__viewContainer .react-calendar__month-view div div .react-calendar__month-view__days button.weekend.attendance {
+	color: var(--calendar-disabled);
+	cursor: default;
+}
+
+.react-calendar .react-calendar__viewContainer .react-calendar__month-view div div .react-calendar__month-view__days button.weekend.attendance:hover {
+	background-color: var(--calendar-back) !important;
+	cursor: default;
+}
+
 .react-calendar .react-calendar__viewContainer .react-calendar__month-view div div .react-calendar__month-view__days button.holiday {
 	background-color: var(--red);
 	color: var(--white);
+}
+
+.react-calendar .react-calendar__viewContainer .react-calendar__month-view div div .react-calendar__month-view__days button.present-date{
+	background-color: var(--calendar-present-days);
+	border: 1px solid var(--calendar-back);
+	color: #fff;
+}
+
+.react-calendar .react-calendar__viewContainer .react-calendar__month-view div div .react-calendar__month-view__days button.absent-date{
+	color: var(--box-red);
 }
 
 /* .react-calendar .react-calendar__viewContainer .react-calendar__tile.react-calendar__month-view__days__day.react-calendar__month-view__days__day--neighboringMonth.normal,
@@ -1055,6 +1102,42 @@ body #content main .box-info li.widgets.dashboard:hover {
 
 /* Project Page ------------------------------------------------------------------------------*/
 
+
+
+/* Attendance Page ---------------------------------------------------------------------------*/
+#content main .box-info.attendance li.calendars{
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+}
+
+#content main .box-info.attendance li.calendars .calendar-info{
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: center;
+	width: 90%;
+}
+
+#content main .box-info.attendance li.calendars .calendar-info .info-color{
+	width: 20px;
+	height: 20px;
+	margin: 0 10px;
+}
+
+#content main .box-info.attendance li.calendars .calendar-info .info-color.present{
+	background-color: var(--calendar-present-days);
+}
+
+#content main .box-info.attendance li.calendars .calendar-info .info-color.absent{
+	background-color: var(--box-red);
+}
+
+.react-calendar.attendance{
+	width: 90%;
+}
+/* Attendance Page ---------------------------------------------------------------------------*/
 
 
 
