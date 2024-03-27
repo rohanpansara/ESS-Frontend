@@ -1,50 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 
-const LeaveApproval = ({ data, columns, columnRenderers }) => {
-  const token = localStorage.getItem("token");
-
-  const handleUpdate = async (id, status) => {
-    try {
-        // Convert id to a number
-        const leaveID = parseInt(id);
-
-        const response = await axios.post(
-            "http://localhost:8080/auth/user/manager/leaves/updateStatus",
-            {
-                id: leaveID, // Send the id as a number
-                status: status,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            }
-        );
-
-        if (response.data) {
-            const { success, message } = response.data;
-
-            if (success) {
-                toast.success(`The request has been ${status.toLowerCase()} successfully!`);
-            } else {
-                toast.error(message || "Couldn't update status for the leave");
-            }
-        } else {
-            toast.error("Unexpected response format: response.data is undefined");
-        }
-    } catch (error) {
-        toast.error("Error updating leave status: " + error.message);
-    }
-};
-
-
+const LeaveApproval = ({ data, columns, columnRenderers, handleUpdate }) => {
   return (
     <div className="table-data">
       <div className="order">
         <div className="head">
-          <h3>Your Notifications</h3>
+          <h3>Pending Leave Applications</h3>
         </div>
         <div className="table-div">
           <table>
@@ -61,7 +24,7 @@ const LeaveApproval = ({ data, columns, columnRenderers }) => {
               {data.length === 0 ? (
                 <tr>
                   <td className="noDataFound" colSpan={columns.length}>
-                    No data found
+                    No Pending Leave Applications
                   </td>
                 </tr>
               ) : (
