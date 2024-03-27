@@ -22,6 +22,7 @@ const Attendance = () => {
         <main>
           <ul className="box-info attendance">
             <li className="calendars">
+              <span>Your Attendance</span>
               <AttendanceCalendar />
               <div className="calendar-info">
                 <div className="info-color present"></div>

@@ -7,7 +7,7 @@ import "react-calendar/dist/Calendar.css";
 import "../styles/dashboard.css";
 import Base from "../components/Base";
 import axios from "axios";
-import UserLeaveTable from "../components/NormalTable";
+import UserLeaveTable from "../components/UserLeaveTable";
 import LeaveApproval from "../components/LeaveApproval";
 
 const Dashboard = () => {
@@ -25,29 +25,35 @@ const Dashboard = () => {
   const [holidays, setHolidays] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        if (!token || token === undefined) {
-          localStorage.clear();
-          toast.error("Please login first");
-          navigate("/login", { state: { fromLogout: true } });
-        } else {
-          await fetchEmployeeDetails();
-          await fetchLeaveDetails();
-          await fetchWorkHours();
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error("An error occurred while fetching data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
+  
+  useEffect(() => {
+    if (employeeData && employeeData.designation.id === 1) {
+      fetchLeaveDetailsForManager();
+    }
+  }, [employeeData]); // Add employeeData as a dependency
+  
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      if (!token || token === undefined) {
+        localStorage.clear();
+        toast.error("Please login first");
+        navigate("/login", { state: { fromLogout: true } });
+      } else {
+        await fetchEmployeeDetails();
+        await fetchLeaveDetails();
+        await fetchWorkHours();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while fetching data");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   useEffect(() => {
     document.title = employeeName
@@ -79,16 +85,17 @@ const Dashboard = () => {
           "employeeFullName",
           data.firstname + " " + data.lastname
         );
-        if(data.designation.id===1){
-          setIsManager(true)
+        if (data.designation.id === 1) {
+          setIsManager(true);
         }
-        setLoading(false);
       } else {
         toast.error(message || "Couldn't load employee data");
-        setLoading(false);
       }
     } catch (error) {
       toast.error("Error loading employee details: " + error.message);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -128,7 +135,6 @@ const Dashboard = () => {
 
       if (success) {
         setLeaveData(data);
-        setLoading(false);
       } else {
         toast.error(message || "Couldn't load leave data");
       }
@@ -140,7 +146,9 @@ const Dashboard = () => {
   };
 
   const fetchLeaveDetailsForManager = async () => {
-    if (isManager) {
+    if (!isManager) {
+      return;
+    }
       try {
         setLoading(true);
         const response = await axios.get(
@@ -154,26 +162,23 @@ const Dashboard = () => {
             },
           }
         );
-  
+
         const { success, data, message } = response.data;
-  
+
         if (success) {
-          setManagerLeaveData(data)
-          setLoading(false);
+          setManagerLeaveData(data);
         } else {
           toast.error(message || "Couldn't load leave data for the team");
-          setLoading(false);
         }
       } catch (error) {
-        toast.error("Error loading leave details for the manager: " + error.message);
+        toast.error(
+          "Error loading leave details for the manager: " + error.message
+        );
       }
-    }
-  }
-
-  useEffect( () => {
-    fetchLeaveDetailsForManager();
-  }, [isManager]);
-  
+      finally{
+        setLoading(false)
+      }
+  };
 
   const fetchWorkHours = async () => {
     setLoading(true);
@@ -196,13 +201,14 @@ const Dashboard = () => {
       if (success) {
         setWorkHours(data.workHours); // set work hours from the response
         setFinalPunchOut(data.finalPunchOutTime); // set final punch out time from the response
-        setLoading(false);
       } else {
         toast.error(message || "Couldn't load work hours data");
-        setLoading(false);
       }
     } catch (error) {
       toast.error("Error loading work hours: " + error.message);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -223,15 +229,15 @@ const Dashboard = () => {
             return moment(dateFrom).format("YYYY-MM-DD");
           });
           setHolidays(marks);
-          setLoading(false);
         } else {
           toast.error(message);
         }
       })
       .catch((error) => console.error("Error fetching holidays:", error));
+      setLoading(false)
   }, []);
 
-  const columns = ["reason", "appliedOn", "status"];
+  const columns = ["reason", "appliedOn", "from", "to", "status"];
   const leaveApprovalColumns = [
     "employee",
     "appliedOn",
@@ -242,6 +248,36 @@ const Dashboard = () => {
     "accept",
     "reject",
   ];
+
+  const handleUpdate = async (itemId, leaveStatus) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/auth/user/manager/leaves/updateStatus?id=${itemId}&status=${leaveStatus}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { success, message } = response.data;
+
+      if (success) {
+        toast.success(`Leave ${leaveStatus.toLowerCase()} successfully!`);
+      } else {
+        toast.error(
+          message ||
+            `Couldn't update leave status to ${leaveStatus.toLowerCase()}`
+        );
+      }
+    } catch (error) {
+      console.error("Something went wrong: ", error);
+      toast.error("Something went wrong: " + error.message);
+    } finally {
+      await fetchLeaveDetailsForManager();
+    }
+  };
 
   return (
     <>
@@ -320,7 +356,7 @@ const Dashboard = () => {
                       }
                     }}
                   />
-                  <span className="calendar-text-header">Upcoming Events</span>
+                  <span className="calendar-text-header">Your Events</span>
                   <span className="calendar-text-body">
                     <li>Office Culture & Events</li>
                     <li>Professional Engagements</li>
@@ -403,7 +439,6 @@ const Dashboard = () => {
                     </svg>
                     <span className="text">
                       <span className="first">{leaveData.length}</span>
-                      <span className="second">/18</span>
                       <p>Leaves Applied</p>
                     </span>
                   </li>
@@ -437,6 +472,7 @@ const Dashboard = () => {
                       </span>
                     ),
                   }}
+                  handleUpdate={handleUpdate}
                 />
               )}
 
