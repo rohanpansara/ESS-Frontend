@@ -105,6 +105,10 @@ html {
 	overflow-x: hidden;
 }
 
+span{
+	color: var(--dark);
+}
+
 body.dark {
 	--light: #303032;
 	--grey: #1e1e1e;
@@ -117,6 +121,10 @@ body.dark {
 	--calendar-back: #989898;
 	--calendar-font: #333333;
 	--calendar-weekend: #BD2031;
+	--calendar-disabled: #b6b6b6;
+
+	--calendar-present-days: #287adfc7;
+    --calendar-absent-days: #cf362cc7;
 
 
 	/* PROJECT CARDS */
@@ -217,6 +225,33 @@ body {
 		transform: rotate(-360deg);
 	}
 }
+
+
+.statusLoader {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background-color: #fff;
+	box-shadow: 32px 0 #fff, -32px 0 #fff;
+	position: relative;
+	animation: flash 0.5s ease-out infinite alternate;
+  }
+  
+  @keyframes flash {
+	0% {
+	  background-color: #FFF2;
+	  box-shadow: 32px 0 #FFF2, -32px 0 #FFF;
+	}
+	50% {
+	  background-color: #FFF;
+	  box-shadow: 32px 0 #FFF2, -32px 0 #FFF2;
+	}
+	100% {
+	  background-color: #FFF2;
+	  box-shadow: 32px 0 #FFF, -32px 0 #FFF2;
+	}
+  }
+		
 
 
 
@@ -462,7 +497,6 @@ body.dark #sidebar .side-menu li .punches.punchOut svg:hover {
 #sidebar .side-menu li a svg {
 	fill: var(--dark);
 }
-
 /* SIDEBAR */
 
 
@@ -667,7 +701,6 @@ body.dark #sidebar .side-menu li .punches.punchOut svg:hover {
 #content nav #switch-mode:checked+.switch-mode::before {
 	left: calc(100% - (25px - 4px) - 2px);
 }
-
 /* NAVBAR */
 
 
@@ -757,7 +790,7 @@ body.dark #sidebar .side-menu li .punches.punchOut svg:hover {
 	border-radius: 20px;
 	display: flex;
 	align-items: center;
-	grid-gap: 24px;
+	grid-gap: 18px;
 	text-align: left;
 }
 
@@ -838,13 +871,20 @@ body #content main .box-info li.widgets.dashboard:hover {
 
 #content main .box-info.dashboard li.calendars .calendar-text-header {
 	color: var(--dark);
+	font-weight: 600;
 	padding: 0;
 	margin: 0;
 	grid-gap: 0;
 }
 
+#content main .box-info.dashboard li.calendars .calendar-text-body{
+	width: 100%;
+}
+
 #content main .box-info.dashboard li.calendars .calendar-text-body li {
 	color: var(--dark);
+	font-size: 14px;
+	font-weight: 300;
 	text-align: left;
 	padding: 0;
 	grid-gap: 0;
@@ -1132,6 +1172,10 @@ body #content main .box-info li.widgets.dashboard:hover {
 
 #content main .box-info.attendance li.calendars .calendar-info .info-color.absent{
 	background-color: var(--box-red);
+}
+
+#content main .box-info.attendance li.calendars .calendar-info .info-text{
+	color: var(--dark);
 }
 
 .react-calendar.attendance{
